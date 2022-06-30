@@ -1,5 +1,5 @@
 import { Input } from "@chakra-ui/react";
-export const BaseTextInput = (props: { width: number }) => {
+export const BaseTextInput = (props) => {
   return (
     <Input
       width={props.width}

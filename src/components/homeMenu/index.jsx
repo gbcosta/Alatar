@@ -3,13 +3,8 @@ import { MdOutlineTipsAndUpdates, MdVideogameAsset } from "react-icons/md";
 import { IoMdCreate } from "react-icons/io";
 import { BsSave2Fill } from "react-icons/bs";
 import { Link } from "react-router-dom";
-interface MenuItemProps {
-  icon: any;
-  children?: any;
-  activeTab: string;
-}
 
-const MenuItem = (props: MenuItemProps) => {
+const MenuItem = (props) => {
   return (
     <Flex
       sx={{
@@ -26,7 +21,7 @@ const MenuItem = (props: MenuItemProps) => {
   );
 };
 
-export const HomeMenu = (props: { activeTab: string }) => {
+export const HomeMenu = (props) => {
   return (
     <Flex
       sx={{
@@ -44,10 +39,12 @@ export const HomeMenu = (props: { activeTab: string }) => {
           New Sheet
         </MenuItem>
       </Link>
+      <Link to="/openSheet">
+        <MenuItem icon={IoMdCreate} activeTab={props.activeTab}>
+          Open Sheet
+        </MenuItem>
+      </Link>
 
-      <MenuItem icon={IoMdCreate} activeTab={props.activeTab}>
-        Open Sheet
-      </MenuItem>
       <Link to="/newGame">
         <MenuItem icon={MdVideogameAsset} activeTab={props.activeTab}>
           New Game

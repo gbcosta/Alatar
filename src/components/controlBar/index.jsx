@@ -6,11 +6,11 @@ import {
   VscChromeClose,
 } from "react-icons/vsc";
 import { RiHome2Fill } from "react-icons/ri";
+import { FaSave } from "react-icons/fa";
 import { Link } from "react-router-dom";
+const ipcRenderer = window.require("electron").ipcRenderer;
 
-interface BarProps {
-  children?: any;
-}
+import { useSelector, useDispatch } from "react-redux";
 
 const Draggable = () => {
   return (
@@ -29,7 +29,7 @@ const Draggable = () => {
   );
 };
 
-const Bar = (props: BarProps) => {
+const Bar = (props) => {
   return (
     <Flex sx={{ width: "100%", height: "25px" }} bgColor="black.800">
       {props.children}
@@ -38,6 +38,17 @@ const Bar = (props: BarProps) => {
 };
 
 export const ControlBar = () => {
+  const components = useSelector((state) => state.saveSheet.value);
+  const name = useSelector((state) => state.sheetName.value);
+  const copyArray = (array) => {
+    console.log(array);
+    let newArray = [];
+    for (let i = 0; i < array.length; i++) {
+      const element = array[i];
+      newArray.push(element);
+    }
+    return newArray;
+  };
   return (
     <Flex sx={{ position: "fixed", width: "100%" }} zIndex={2000}>
       <Bar>
@@ -56,6 +67,28 @@ export const ControlBar = () => {
             }}
           ></Icon>
         </Link>
+        <Icon
+          h={5}
+          w={5}
+          as={FaSave}
+          sx={{
+            fill: "white",
+            ml: 2,
+            "-webkit-app-region": "no-drag",
+            _hover: { cursor: "pointer" },
+          }}
+          onClick={() => {
+            console.log(components.componentsAttributes);
+            ipcRenderer.invoke("save", {
+              name: {
+                name: name.name,
+                fileName: name.fileName,
+              },
+              componentsAttributes: components.componentsAttributes,
+              layout: components.layout,
+            });
+          }}
+        ></Icon>
 
         <Flex sx={{ flexGrow: 1 }}></Flex>
         <ControllerButton icon={VscChromeMinimize} onClick={"minimize"} />

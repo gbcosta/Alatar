@@ -35,7 +35,7 @@ const InputField = () => {
   );
 };
 
-const Option = (props: { children: string }) => {
+const Option = (props) => {
   return (
     <option style={{ color: "black", backgroundColor: "#ddd" }}>
       {props.children}

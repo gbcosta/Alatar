@@ -1,10 +1,6 @@
 import { NumberInput, NumberInputField } from "@chakra-ui/react";
 
-interface BaseInputProps {
-  width?: string;
-}
-
-export const BaseInput = (props: BaseInputProps) => {
+export const BaseInput = (props) => {
   return (
     <NumberInput
       sx={{

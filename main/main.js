@@ -1,4 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
+var crypto = require("crypto");
+
+const fs = require("fs");
 
 require("@electron/remote/main").initialize();
 
@@ -62,4 +65,70 @@ ipcMain.on("minimize", () => {
 
 ipcMain.on("maximize", () => {
   maximizeWindow();
+});
+
+const read_file = function (path) {
+  return fs.readFileSync(path, "utf8");
+};
+
+const write_file = function (path, output) {
+  fs.writeFileSync(path, output);
+};
+
+const insideArray = (n, array) => {
+  for (let i = 0; i < array.length; i++) {
+    if (n.id == array[i].i) return true;
+  }
+  return false;
+};
+
+ipcMain.handle("save", async (event, args) => {
+  let { name, layout, componentsAttributes } = { ...args };
+  let componentsInsideSheet = [];
+
+  for (let i = 0; i < componentsAttributes.length; i++) {
+    const element = componentsAttributes[i];
+    if (insideArray(element, layout)) {
+      componentsInsideSheet.push(element);
+    }
+  }
+
+  const saveObj = {
+    name: name.name,
+    componentsAttributes: componentsInsideSheet,
+    layout: layout,
+  };
+
+  const jsonSaveObj = JSON.stringify(saveObj);
+
+  if (!fs.existsSync("./saveSheets")) {
+    fs.mkdirSync("./saveSheets");
+  }
+
+  console.log(saveObj);
+  write_file(
+    `./saveSheets/${
+      saveObj.name + crypto.randomBytes(20).toString("hex")
+    }.json`,
+    jsonSaveObj
+  );
+});
+var _files = [];
+function readFiles() {
+  const files = fs.readdirSync("./saveSheets");
+
+  return files;
+}
+
+ipcMain.handle("getSheets", (argas) => {
+  const files = readFiles();
+  let sheets = [];
+  for (let i = 0; i < files.length; i++) {
+    let obj = read_file("./saveSheets/" + files[i]);
+    obj = JSON.parse(obj);
+    obj.fileName = files[i];
+    sheets.push(obj);
+  }
+
+  return sheets;
 });

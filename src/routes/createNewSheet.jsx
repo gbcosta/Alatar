@@ -7,7 +7,12 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { HomeMenu } from "@components/homeMenu";
+import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
+
+import { setSheetName } from "../store/reducers/nameSheet";
+import { setLoadFlag } from "../store/reducers/loadFlag";
+import { useSelector, useDispatch } from "react-redux";
 
 const sxField = {
   flexDir: "column",
@@ -24,19 +29,22 @@ const sxTextField = {
   mb: 1,
 };
 
-const InputField = () => {
+const InputField = (props) => {
   return (
     <Flex sx={sxField}>
       <Text sx={sxTextField}>Name</Text>
       <Input
         variant={"flushed"}
         sx={{ _focus: "none", color: "white" }}
+        onChange={(e) => {
+          props.setNameSheet(e.target.value);
+        }}
       ></Input>
     </Flex>
   );
 };
 
-const Option = (props: { children: string }) => {
+const Option = (props) => {
   return (
     <option style={{ color: "black", backgroundColor: "#ddd" }}>
       {props.children}
@@ -60,6 +68,9 @@ const SelectPredefinedField = () => {
 };
 
 export const CreateNewSheet = () => {
+  const dispatch = useDispatch();
+
+  const [nameSheet, setNameSheet] = useState("");
   return (
     <Flex sx={{ width: "100%", pt: 3 }}>
       <HomeMenu activeTab={"New Sheet"} />
@@ -75,8 +86,7 @@ export const CreateNewSheet = () => {
         }}
       >
         <Text sx={{ color: "white", fontSize: "2xl" }}>Sheet</Text>
-        <InputField />
-        <SelectPredefinedField />
+        <InputField setNameSheet={setNameSheet} />
 
         <Link to="/createSheet">
           <Button
@@ -87,6 +97,10 @@ export const CreateNewSheet = () => {
               _hover: { bgColor: "black.600" },
               _active: { bgColor: "black.500" },
               color: "white",
+            }}
+            onClick={() => {
+              dispatch(setSheetName({ name: nameSheet, fileName: "" }));
+              dispatch(setLoadFlag("create"));
             }}
           >
             Create

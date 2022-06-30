@@ -1,12 +1,6 @@
 import { Flex, Icon } from "@chakra-ui/react";
 
-interface Props {
-  icon: any;
-  close?: boolean;
-  onClick?: String;
-}
-
-export const ControllerButton = (props: Props) => {
+export const ControllerButton = (props) => {
   const ipcRenderer = window.require("electron").ipcRenderer;
   return (
     <Flex
